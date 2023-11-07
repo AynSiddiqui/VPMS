@@ -110,7 +110,6 @@ class InstallWindow(QWidget):
         file.write(json.dumps(data))
         file.close()
         dbOperation=DBOperation()
-        dbOperation.CreateTables()
         dbOperation.InsertAdmin(self.input_admin_username.text(),self.input_admin_password.text())
         dbOperation.InsertOneTimeData(int(self.input_two_wheeler.text()),int(self.input_four_wheeler.text()))
 

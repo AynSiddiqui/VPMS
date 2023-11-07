@@ -23,17 +23,11 @@ def showLoginWindow():
     login.showLoginScreen()
 
 
-
 app=QApplication(sys.argv)
 login=LoginScreen()
 mainScreen=MainScreen()
 mainScreen.showSplashScreen()
 installWindow=InstallWindow()
-
-if os.path.exists("./config.json"):
-    QTimer.singleShot(3000,showLoginWindow)
-else:
-    QTimer.singleShot(3000,showSetupWindow)
-
+QTimer.singleShot(3000,showLoginWindow)
 
 sys.exit(app.exec_())

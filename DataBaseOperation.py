@@ -12,26 +12,21 @@ class DBOperation():
         except Exception as e:
             print(f"Error: {e}")
 
-    def CreateTables(self):
-        # cursor = self.connection.cursor()
-
-        # # Drop tables if they exist
-        # cursor.execute("DROP TABLE IF EXISTS admin")
-        # cursor.execute("DROP TABLE IF EXISTS slots")
-        # cursor.execute("DROP TABLE IF EXISTS vehicles")
-
-        # # Create tables
-        # cursor.execute("CREATE TABLE admin (id SERIAL PRIMARY KEY, username VARCHAR(30), password VARCHAR(30), created_at VARCHAR(30))")
-        # cursor.execute("CREATE TABLE slots (id SERIAL PRIMARY KEY, vehicle_id VARCHAR(30), space_for INT, is_empty INT)")
-        # cursor.execute("CREATE TABLE vehicles (id SERIAL PRIMARY KEY, name VARCHAR(30), mobile VARCHAR(30), entry_time VARCHAR(30), exit_time VARCHAR(30), is_exit VARCHAR(30), vehicle_no VARCHAR(30), vehicle_type VARCHAR(30), created_at VARCHAR(30), updated_at VARCHAR(30))")
-
-        # self.connection.commit()
-        # cursor.close()
-        # print("Tables created successfully")
-        print("Holla Amigo")
-
     def InsertOneTimeData(self, space_for_two, space_for_four):
         cursor = self.connection.cursor()
+        for x in range(space_for_two):
+            cursor.execute("INSERT into slots (space_for, is_empty) values (2, 1)")
+            self.connection.commit()
+
+        for x in range(space_for_four):
+            cursor.execute("INSERT into slots (space_for, is_empty) values (4, 1)")
+            self.connection.commit()
+        cursor.close()
+
+    def ChangeSlots(self , space_for_two , space_for_four):
+        cursor = self.connection.cursor()
+        cursor.execute("DELETE from slots")
+        
         for x in range(space_for_two):
             cursor.execute("INSERT into slots (space_for, is_empty) values (2, 1)")
             self.connection.commit()

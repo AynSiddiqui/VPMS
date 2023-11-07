@@ -45,6 +45,8 @@ class LoginScreen(QWidget):
             self.error_msg.setText("Please Enter Password")
             return
         dboperation=DBOperation()
+        #thats me 
+        # dboperation.ChangeSlots(8 , 8)
         result=dboperation.doAdminLogin(self.input_username.text(),self.input_password.text())
         if result:
             self.error_msg.setText("Login Successful")
