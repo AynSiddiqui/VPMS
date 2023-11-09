@@ -25,14 +25,16 @@ class DBOperation():
 
     def ChangeSlots(self , space_for_two , space_for_four):
         cursor = self.connection.cursor()
-        cursor.execute("DELETE from slots")
+        cursor.execute("TRUNCATE table slots")
         
         for x in range(space_for_two):
-            cursor.execute("INSERT into slots (space_for, is_empty) values (2, 1)")
+            a = 200 + x
+            cursor.execute(f"INSERT into slots (id , space_for, is_empty) values ({a} ,2, 1)")
             self.connection.commit()
 
         for x in range(space_for_four):
-            cursor.execute("INSERT into slots (space_for, is_empty) values (4, 1)")
+            b = 400 + x
+            cursor.execute(f"INSERT into slots (id , space_for, is_empty) values ({b} , 4 , 1)")
             self.connection.commit()
         cursor.close()
 
@@ -75,20 +77,33 @@ class DBOperation():
         return data
 
     def AddVehicles(self, name, vehicle_no, mobile, vehicle_type):
+        cursor = self.connection.cursor()
+        
+        cursor.execute("SELECT id FROM vehicles WHERE vehicle_no=%s AND is_exit='0'", (str(vehicle_no),))
+        existing_vehicle = cursor.fetchone()
+
+        if existing_vehicle:
+            cursor.close()
+            return "Vehicle with the same number is already parked and not exited"
+
         spacid = self.spaceAvailable(vehicle_type)
+
         if spacid:
             currentdata = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             data = (name, mobile, currentdata, '', '0', vehicle_no, currentdata, currentdata, vehicle_type)
-            cursor = self.connection.cursor()
-            cursor.execute("INSERT into vehicles (name, mobile, entry_time, exit_time, is_exit, vehicle_no, created_at, updated_at, vehicle_type) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)", data)
+
+            cursor.execute("INSERT into vehicles (name, mobile, entry_time, exit_time, is_exit, vehicle_no, created_at, updated_at, vehicle_type) values (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id", data)
             self.connection.commit()
             lastid = cursor.fetchone()[0]
+            
             cursor.execute("UPDATE slots SET vehicle_id=%s, is_empty=0 WHERE id=%s", (lastid, spacid))
             self.connection.commit()
             cursor.close()
             return True
         else:
+            cursor.close()
             return "No Space Available for Parking"
+
 
     def spaceAvailable(self, v_type):
         cursor = self.connection.cursor()

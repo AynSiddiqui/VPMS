@@ -262,20 +262,22 @@ class HomeScreen(QMainWindow):
 
         layout.addStretch()
         frame.setLayout(layout)
-        button.clicked.connect(lambda:self.addVehicles(name_input.text(),vehicle_input.text(),mobile_input.text(),vtype.currentIndex(),error_label))
+        button.clicked.connect(lambda:self.addVehicles(name_input.text(), vehicle_input.text(), mobile_input.text(), vtype.currentIndex(), error_label, name_input, mobile_input, vehicle_input))
         self.vertical_2.addWidget(frame)
 
-    def addVehicles(self,name,vehicleno,mobile,index,error_label):
+    def addVehicles(self,name,vehicleno,mobile,index,error_label , name_input , mobile_input , vehicle_input):
         vtp=2
         if index==0:
             vtp=2
         else:
             vtp=4
 
-
         data=self.dbOperation.AddVehicles(name,vehicleno,mobile,str(vtp))
         if data==True:
             error_label.setText("Added Successfully")
+            name_input.clear()
+            mobile_input.clear()
+            vehicle_input.clear()
         elif data==False:
             error_label.setText("Failed to Add Vehicle")
         else:
