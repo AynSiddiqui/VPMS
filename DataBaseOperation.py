@@ -77,8 +77,13 @@ class DBOperation():
         return data
 
     def AddVehicles(self, name, vehicle_no, mobile, vehicle_type):
+        if not all([name, vehicle_no, mobile, vehicle_type]):
+            return "All fields must be provided"
+
+        if not (mobile.isdigit() and len(mobile) == 10):
+            return "Mobile number must be a 10-digit number"
+
         cursor = self.connection.cursor()
-        
         cursor.execute("SELECT id FROM vehicles WHERE vehicle_no=%s AND is_exit='0'", (str(vehicle_no),))
         existing_vehicle = cursor.fetchone()
 
@@ -95,7 +100,7 @@ class DBOperation():
             cursor.execute("INSERT into vehicles (name, mobile, entry_time, exit_time, is_exit, vehicle_no, created_at, updated_at, vehicle_type) values (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id", data)
             self.connection.commit()
             lastid = cursor.fetchone()[0]
-            
+
             cursor.execute("UPDATE slots SET vehicle_id=%s, is_empty=0 WHERE id=%s", (lastid, spacid))
             self.connection.commit()
             cursor.close()
@@ -103,6 +108,7 @@ class DBOperation():
         else:
             cursor.close()
             return "No Space Available for Parking"
+
 
 
     def spaceAvailable(self, v_type):

@@ -1,6 +1,6 @@
 import sys
 import os
-from InstallWindow import InstallWindow
+# from InstallWindow import InstallWindow
 from LoginWindow import LoginScreen
 from PyQt5.QtWidgets import QApplication,QSplashScreen,QLabel
 from PyQt5.QtGui import QPixmap
@@ -13,9 +13,9 @@ class MainScreen():
         self.splassh.show()
 
 
-def showSetupWindow():
-    mainScreen.splassh.close()
-    installWindow.show()
+# def showSetupWindow():
+#     mainScreen.splassh.close()
+#     installWindow.show()
 
 
 def showLoginWindow():
@@ -27,7 +27,7 @@ app=QApplication(sys.argv)
 login=LoginScreen()
 mainScreen=MainScreen()
 mainScreen.showSplashScreen()
-installWindow=InstallWindow()
+# installWindow=InstallWindow()
 QTimer.singleShot(3000,showLoginWindow)
 
 sys.exit(app.exec_())
