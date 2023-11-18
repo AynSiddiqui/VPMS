@@ -1,17 +1,30 @@
 import psycopg2
 from datetime import datetime
 
-class DBOperation():
-
+class DBOperation:
+    #done to prevent gui from connecting to db multiple times
+    connection = None
     def __init__(self):
-        connection_string = "postgresql://vpms_user:RUrfhs9jSEZz9uRM0HzW1iqWPx9XCIZF@dpg-cl4p7fs2np1s7383qb7g-a.singapore-postgres.render.com/vpms"
+        self.connect_to_db()
+    def connect_to_db(self):
+        if not DBOperation.connection:
+            connection_string = "postgresql://vpms_user:RUrfhs9jSEZz9uRM0HzW1iqWPx9XCIZF@dpg-cl4p7fs2np1s7383qb7g-a.singapore-postgres.render.com/vpms"
+            try:
+                DBOperation.connection = psycopg2.connect(connection_string)
+                print("Connected to the DB")
+            except Exception as e:
+                print(f"Error: {e}")
 
-        try:
-            self.connection = psycopg2.connect(connection_string)
-            print("Connected to the DB")
-        except Exception as e:
-            print(f"Error: {e}")
+    def InsertOneTimeData(self, space_for_two, space_for_four):
+        cursor = DBOperation.connection.cursor()
+        for x in range(space_for_two):
+            cursor.execute("INSERT into slots (space_for, is_empty) values (2, 1)")
+            DBOperation.connection.commit()
 
+        for x in range(space_for_four):
+            cursor.execute("INSERT into slots (space_for, is_empty) values (4, 1)")
+            DBOperation.connection.commit()
+        cursor.close()
     def InsertOneTimeData(self, space_for_two, space_for_four):
         cursor = self.connection.cursor()
         for x in range(space_for_two):
